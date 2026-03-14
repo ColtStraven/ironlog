@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 script-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+                 font-src https://fonts.gstatic.com;
+                 img-src 'self' data:;">
+  <title>IronLog</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<div id="shell">
+
+  <!-- ── Sidebar ─────────────────────────────── -->
+  <aside id="sidebar">
+    <div class="logo">
+      <div class="logo-name">IronLog</div>
+      <div class="logo-sub">Analytics</div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" data-page="dashboard">
+        <span class="nav-dot"></span>Dashboard
+      </div>
+
+      <div class="nav-section">Training</div>
+      <div class="nav-item" data-page="log">
+        <span class="nav-dot"></span>Log Workout
+      </div>
+      <div class="nav-item" data-page="analysis">
+        <span class="nav-dot"></span>Session Analysis
+      </div>
+      <div class="nav-item" data-page="strength">
+        <span class="nav-dot"></span>Strength Trends
+      </div>
+      <div class="nav-item" data-page="deload">
+        <span class="nav-dot"></span>Deload Detector
+      </div>
+      <div class="nav-item" data-page="history">
+        <span class="nav-dot"></span>Session History
+      </div>
+      <div class="nav-item" data-page="exercises">
+        <span class="nav-dot"></span>Exercises
+      </div>
+
+      <div class="nav-section">Body</div>
+      <div class="nav-item" data-page="recomp">
+        <span class="nav-dot"></span>Recomp Tracker
+      </div>
+      <div class="nav-item" data-page="measurements">
+        <span class="nav-dot"></span>Measurements
+      </div>
+
+      <div class="nav-section">Daily</div>
+      <div class="nav-item" data-page="activity">
+        <span class="nav-dot"></span>Activity & Steps
+      </div>
+      <div class="nav-item" data-page="nutrition">
+        <span class="nav-dot"></span>Nutrition
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="week-pill">Program week <span id="weekNumber">—</span></div>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────── -->
+  <main id="main">
+
+    <!-- Dashboard -->
+    <div id="page-dashboard" class="page-view">
+      <div class="topbar">
+        <div class="topbar-title">Dashboard</div>
+        <div class="topbar-meta" id="dashboard-meta"></div>
+      </div>
+      <div class="page-content" id="dashboard-content">
+        <div class="empty-state">
+          <div class="empty-title">Loading…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session Analysis -->
+    <div id="page-analysis" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Session Analysis</div>
+        <div class="topbar-meta" id="analysis-meta"></div>
+      </div>
+      <div class="page-content" id="analysis-content"></div>
+    </div>
+
+    <!-- Strength Trends -->
+    <div id="page-strength" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Strength Trends</div>
+        <div class="topbar-meta" id="strength-meta">1RM estimates · progressive overload</div>
+      </div>
+      <div class="page-content" id="strength-content"></div>
+    </div>
+
+    <!-- Deload Detector -->
+    <div id="page-deload" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Deload Detector</div>
+        <div class="topbar-meta" id="deload-meta">cumulative fatigue monitor</div>
+      </div>
+      <div class="page-content" id="deload-content"></div>
+    </div>
+
+    <!-- Log Workout -->
+    <div id="page-log" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Log Workout</div>
+        <div class="topbar-meta" id="log-date-display"></div>
+      </div>
+      <div class="page-content" id="log-content"></div>
+    </div>
+
+    <!-- Session History -->
+    <div id="page-history" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Session History</div>
+        <div class="topbar-meta">All sessions</div>
+      </div>
+      <div class="page-content" id="history-content"></div>
+    </div>
+
+    <!-- Exercises -->
+    <div id="page-exercises" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Exercises</div>
+        <div class="topbar-meta">Your exercise list</div>
+      </div>
+      <div class="page-content" id="exercises-content"></div>
+    </div>
+
+    <!-- Recomp Tracker -->
+    <div id="page-recomp" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Recomp Tracker</div>
+        <div class="topbar-meta">bodyweight · measurements · volume</div>
+      </div>
+      <div class="page-content" id="recomp-content"></div>
+    </div>
+
+    <!-- Measurements -->
+    <div id="page-measurements" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Measurements</div>
+        <div class="topbar-meta">Body metrics log</div>
+      </div>
+      <div class="page-content" id="measurements-content"></div>
+    </div>
+
+    <!-- Activity -->
+    <div id="page-activity" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Activity & Steps</div>
+        <div class="topbar-meta">Daily step log</div>
+      </div>
+      <div class="page-content" id="activity-content"></div>
+    </div>
+
+    <!-- Nutrition -->
+    <div id="page-nutrition" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Nutrition</div>
+        <div class="topbar-meta">Daily intake log</div>
+      </div>
+      <div class="page-content" id="nutrition-content"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<!-- App modules (load order matters) -->
+<script src="pages/router.js"></script>
+<script src="pages/dashboard.js"></script>
+<script src="pages/log.js"></script>
+<script src="pages/history.js"></script>
+<script src="pages/exercises.js"></script>
+<script src="pages/measurements.js"></script>
+<script src="pages/activity.js"></script>
+<script src="pages/nutrition.js"></script>
+<script src="pages/analysis.js"></script>
+<script src="pages/strength.js"></script>
+<script src="pages/recomp.js"></script>
+<script src="pages/deload.js"></script>
+<script src="pages/app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "ironlog",
+  "version": "0.1.0",
+  "description": "Personal fitness analytics — local, private, data-forward",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0"
+  },
+  "dependencies": {
+    "sql.js": "^1.12.0"
+  },
+  "build": {
+    "appId": "com.ironlog.app",
+    "productName": "IronLog"
+  }
+}
