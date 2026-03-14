@@ -5,10 +5,13 @@
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "electron . --dev"
+    "dev": "electron . --dev",
+    "dist": "electron-builder --win",
+    "dist:dir": "electron-builder --win --dir"
   },
   "devDependencies": {
-    "electron": "^29.0.0"
+    "electron": "^29.0.0",
+    "electron-builder": "^24.9.1"
   },
   "dependencies": {
     "sql.js": "^1.12.0"
@@ -16,11 +19,35 @@
   "build": {
     "appId": "com.ironlog.app",
     "productName": "IronLog",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "node_modules/sql.js/dist/sql-wasm.wasm",
+        "to": "sql-wasm.wasm"
+      }
+    ],
     "win": {
-    "icon": "build/icons/icon.ico"
-  },
-  "mac": {
-    "icon": "build/icons/icon.icns"
-  }
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "IronLog"
+    }
   }
 }

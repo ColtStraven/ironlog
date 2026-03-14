@@ -8,6 +8,7 @@
 
 const path      = require('path');
 const fs        = require('fs');
+const { app }   = require('electron');
 const initSqlJs = require('sql.js');
 
 let db;       // sql.js Database instance
@@ -623,7 +624,21 @@ function seedExercises() {
 // ── Init (async — sql.js loads WASM) ──────────────────────────────────────────
 async function initDatabase(userDataPath) {
   DB_PATH = path.join(userDataPath, 'ironlog.db');
-  const SQL = await initSqlJs();
+
+  // In packaged app, WASM is in process.resourcesPath
+  // In dev, it's in node_modules/sql.js/dist
+  const wasmPath = app
+    ? path.join(
+        app.isPackaged
+          ? process.resourcesPath
+          : path.join(__dirname, '../../node_modules/sql.js/dist'),
+        'sql-wasm.wasm'
+      )
+    : path.join(__dirname, '../../node_modules/sql.js/dist/sql-wasm.wasm');
+
+  const SQL = await initSqlJs({
+    locateFile: () => wasmPath,
+  });
 
   if (fs.existsSync(DB_PATH)) {
     const buf = fs.readFileSync(DB_PATH);
