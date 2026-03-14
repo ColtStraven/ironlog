@@ -24,7 +24,7 @@ const ExercisesPage = (() => {
         <td style="color:var(--text-2)">${e.muscle_group}</td>
         <td style="color:var(--text-3)">${e.equipment}</td>
         <td>
-          <button class="del-btn" onclick="ExercisesPage.deleteExercise(${e.id},'${e.name.replace(/'/g,"\\'")}')">✕</button>
+          <button class="del-btn" data-action="delete-ex" data-id="${e.id}" data-name="${e.name.replace(/"/g,'&quot;')}">✕</button>
         </td>
       </tr>`).join('');
 
@@ -88,6 +88,18 @@ const ExercisesPage = (() => {
   }
 
   function bindEvents() {
+    // Delegation for delete buttons
+    const container = document.getElementById('exercises-content');
+    container.addEventListener('click', async e => {
+      const btn = e.target.closest('[data-action="delete-ex"]');
+      if (!btn) return;
+      const id   = parseInt(btn.dataset.id);
+      const name = btn.dataset.name;
+      if (!confirm(`Remove "${name}" from your exercise list?`)) return;
+      await window.api.exercises.delete(id);
+      render();
+    });
+
     document.getElementById('ex-add-btn').addEventListener('click', async () => {
       const name      = document.getElementById('ex-name').value.trim();
       const category  = document.getElementById('ex-category').value;

@@ -107,7 +107,7 @@ const StrengthPage = (() => {
       container.innerHTML = `<div class="empty-state">
         <div class="empty-title">No exercises yet</div>
         <p>Add exercises and log some workouts first.</p>
-        <br><button class="btn primary" onclick="Router.go('exercises')">Add Exercises</button>
+        <br><button class="btn primary" data-nav="exercises">Add Exercises</button>
       </div>`;
       return;
     }
@@ -136,7 +136,7 @@ const StrengthPage = (() => {
           <div style="font-size:11px;font-weight:500;letter-spacing:0.6px;text-transform:uppercase;color:var(--text-3)">
             Select exercises to compare
           </div>
-          <button class="btn" style="font-size:11px;padding:4px 10px" onclick="StrengthPage.clearAll()">Clear all</button>
+          <button class="btn" style="font-size:11px;padding:4px 10px" data-action="clear-all">Clear all</button>
         </div>
         <div id="ex-chip-row" style="display:flex;flex-wrap:wrap;gap:6px"></div>
       </div>
@@ -179,15 +179,28 @@ const StrengthPage = (() => {
     let html = '';
     for (const [cat, exes] of Object.entries(grouped)) {
       exes.forEach(e => {
-        html += `<div class="ex-chip" data-id="${e.id}" data-cat="${cat}"
-          onclick="StrengthPage.toggleExercise(${e.id})">${e.name}</div>`;
+        html += `<div class="ex-chip" data-action="toggle-ex" data-id="${e.id}" data-cat="${cat}">${e.name}</div>`;
       });
     }
     row.innerHTML = html;
   }
 
   function bindEvents() {
-    // nothing extra needed — chips and clear are handled via onclick
+    const container = document.getElementById('strength-content');
+    if (!container) return;
+
+    container.addEventListener('click', async e => {
+      // Clear all button
+      const clearBtn = e.target.closest('[data-action="clear-all"]');
+      if (clearBtn) { clearAll(); return; }
+
+      // Exercise chip toggle
+      const chip = e.target.closest('[data-action="toggle-ex"]');
+      if (chip) {
+        await toggleExercise(parseInt(chip.dataset.id));
+        return;
+      }
+    });
   }
 
   async function toggleExercise(id) {

@@ -130,7 +130,7 @@ const Dashboard = (() => {
                 <span style="font-size:12px;font-weight:500;color:var(--amber)">Fatigue accumulation detected</span>
                 <span style="font-size:12px;color:var(--text-2);margin-left:8px">Drop-off creeping up across recent sessions.</span>
               </div>
-              <button class="btn" style="font-size:11px;padding:4px 12px;flex-shrink:0" onclick="Router.go('deload')">View Deload Detector →</button>
+              <button class="btn" style="font-size:11px;padding:4px 12px;flex-shrink:0" data-nav="deload">View Deload Detector →</button>
             </div>`;
         }
       }
@@ -291,7 +291,7 @@ const Dashboard = (() => {
         <div class="empty-title">No sessions yet</div>
         <p>Log your first workout to see analytics here.</p>
         <br>
-        <button class="btn primary" onclick="Router.go('log')">Log a Workout</button>
+        <button class="btn primary" data-nav="log">Log a Workout</button>
       </div>`;
     }
 

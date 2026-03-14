@@ -144,9 +144,6 @@ const ActivityPage = (() => {
 
 const NutritionPage = (() => {
 
-  const TARGET_CALS    = 2250;
-  const TARGET_PROTEIN = 180;
-
   async function render() {
     const rows = await window.api.nutrition.list(30);
     const container = document.getElementById('nutrition-content');
@@ -156,15 +153,25 @@ const NutritionPage = (() => {
 
   function today() { return new Date().toISOString().slice(0,10); }
 
+  function getTargets() {
+    // Pull from settings if available, fall back to defaults
+    try {
+      if (typeof SettingsPage !== 'undefined') return SettingsPage.getTargets();
+    } catch {}
+    return { calories: 2250, protein: 180, carbs: 200, fat: 70 };
+  }
+
   function calTag(cals) {
     if (!cals) return '';
-    const diff = cals - TARGET_CALS;
+    const target = getTargets().calories;
+    const diff = cals - target;
     if (Math.abs(diff) < 150) return `<span class="tag tag-green">On target</span>`;
     if (diff < 0) return `<span class="tag tag-amber">${Math.abs(diff)} under</span>`;
     return `<span class="tag tag-red">${diff} over</span>`;
   }
 
   function buildPage(rows) {
+    const targets = getTargets();
     const tableRows = rows.map(r => `
       <tr>
         <td style="font-family:var(--mono);font-size:12px">${new Date(r.log_date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
@@ -176,16 +183,27 @@ const NutritionPage = (() => {
       </tr>`).join('');
 
     return `
-      <div class="metric-row cols-2" style="margin-bottom:4px">
+      <div class="metric-row cols-4" style="margin-bottom:4px">
         <div class="metric-card">
           <div class="metric-label">Calorie target</div>
-          <div class="metric-value">${TARGET_CALS.toLocaleString()}</div>
-          <div class="metric-unit">kcal/day · recomp deficit</div>
+          <div class="metric-value">${targets.calories.toLocaleString()}</div>
+          <div class="metric-unit">kcal/day</div>
+          <div class="metric-delta delta-neutral" data-nav="settings" style="cursor:pointer;text-decoration:underline">Edit in Settings</div>
         </div>
         <div class="metric-card">
           <div class="metric-label">Protein target</div>
-          <div class="metric-value">${TARGET_PROTEIN}g</div>
-          <div class="metric-unit">~0.9g per lb bodyweight</div>
+          <div class="metric-value">${targets.protein}g</div>
+          <div class="metric-unit">per day</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Carb target</div>
+          <div class="metric-value">${targets.carbs}g</div>
+          <div class="metric-unit">per day</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Fat target</div>
+          <div class="metric-value">${targets.fat}g</div>
+          <div class="metric-unit">per day</div>
         </div>
       </div>
 
@@ -193,10 +211,10 @@ const NutritionPage = (() => {
         <div class="section-label">Log today</div>
         <div class="form-row">
           <div class="form-group"><label>Date</label><input type="date" id="n-date" value="${today()}" style="width:160px"></div>
-          <div class="form-group"><label>Calories</label><input type="number" id="n-cals" placeholder="2250" style="width:100px"></div>
-          <div class="form-group"><label>Protein (g)</label><input type="number" id="n-protein" placeholder="180" style="width:95px"></div>
-          <div class="form-group"><label>Carbs (g)</label><input type="number" id="n-carbs" placeholder="220" style="width:90px"></div>
-          <div class="form-group"><label>Fat (g)</label><input type="number" id="n-fat" placeholder="70" style="width:80px"></div>
+          <div class="form-group"><label>Calories</label><input type="number" id="n-cals" placeholder="${targets.calories}" style="width:100px"></div>
+          <div class="form-group"><label>Protein (g)</label><input type="number" id="n-protein" placeholder="${targets.protein}" style="width:95px"></div>
+          <div class="form-group"><label>Carbs (g)</label><input type="number" id="n-carbs" placeholder="${targets.carbs}" style="width:90px"></div>
+          <div class="form-group"><label>Fat (g)</label><input type="number" id="n-fat" placeholder="${targets.fat}" style="width:80px"></div>
           <div style="padding-top:18px"><button class="btn primary" id="n-save">Save</button></div>
         </div>
       </div>

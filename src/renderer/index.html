@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
-                 script-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+                 script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
                  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
                  font-src https://fonts.gstatic.com;
                  img-src 'self' data:;">
@@ -63,6 +63,17 @@
       </div>
       <div class="nav-item" data-page="nutrition">
         <span class="nav-dot"></span>Nutrition
+      </div>
+
+      <div class="nav-section">Data</div>
+      <div class="nav-item" data-page="hevy">
+        <span class="nav-dot"></span>Hevy Sync
+      </div>
+      <div class="nav-item" data-page="export">
+        <span class="nav-dot"></span>Export Data
+      </div>
+      <div class="nav-item" data-page="settings">
+        <span class="nav-dot"></span>Settings
       </div>
     </nav>
 
@@ -177,6 +188,33 @@
       <div class="page-content" id="nutrition-content"></div>
     </div>
 
+    <!-- Hevy Sync -->
+    <div id="page-hevy" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Hevy Sync</div>
+        <div class="topbar-meta" id="hevy-meta">webhook · auto-import</div>
+      </div>
+      <div class="page-content" id="hevy-content"></div>
+    </div>
+
+    <!-- Export -->
+    <div id="page-export" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Export Data</div>
+        <div class="topbar-meta">CSV · all tables</div>
+      </div>
+      <div class="page-content" id="export-content"></div>
+    </div>
+
+    <!-- Settings -->
+    <div id="page-settings" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Settings</div>
+        <div class="topbar-meta">TDEE · nutrition targets · profile</div>
+      </div>
+      <div class="page-content" id="settings-content"></div>
+    </div>
+
   </main>
 </div>
 
@@ -196,6 +234,9 @@
 <script src="pages/strength.js"></script>
 <script src="pages/recomp.js"></script>
 <script src="pages/deload.js"></script>
+<script src="pages/export.js"></script>
+<script src="pages/hevy.js"></script>
+<script src="pages/settings.js"></script>
 <script src="pages/app.js"></script>
 
 </body>

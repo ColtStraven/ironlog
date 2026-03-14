@@ -10,23 +10,34 @@ const Router = (() => {
   }
 
   function go(name) {
-    if (current === name) return;
-
-    // Hide all
+    // Hide all pages and deactivate nav
     document.querySelectorAll('.page-view').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
-    // Show target
+    // Show target page
     const el = document.getElementById(`page-${name}`);
-    if (el) el.classList.remove('hidden');
+    if (el) {
+      el.classList.remove('hidden');
+    } else {
+      console.warn(`[Router] No page element found for: page-${name}`);
+      return;
+    }
 
+    // Activate nav item
     const navItem = document.querySelector(`.nav-item[data-page="${name}"]`);
     if (navItem) navItem.classList.add('active');
 
     current = name;
 
-    if (pages[name]) pages[name]();
+    // Always call the page's onEnter so it re-renders fresh
+    if (pages[name]) {
+      pages[name]();
+    } else {
+      console.warn(`[Router] No handler registered for: ${name}`);
+    }
   }
 
-  return { register, go };
+  function getCurrent() { return current; }
+
+  return { register, go, getCurrent };
 })();

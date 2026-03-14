@@ -123,8 +123,8 @@ const RecompPage = (() => {
           <p>Log body measurements and some workouts to see your recomp progress here.</p>
           <br>
           <div style="display:flex;gap:10px;justify-content:center">
-            <button class="btn primary" onclick="Router.go('measurements')">Log Measurements</button>
-            <button class="btn" onclick="Router.go('log')">Log Workout</button>
+            <button class="btn primary" data-nav="measurements">Log Measurements</button>
+            <button class="btn" data-nav="log">Log Workout</button>
           </div>
         </div>`;
       return;

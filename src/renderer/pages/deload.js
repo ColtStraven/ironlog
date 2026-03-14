@@ -284,7 +284,7 @@ const DeloadPage = (() => {
         <div class="empty-state">
           <div class="empty-title">Not enough data yet</div>
           <p>Log at least 4 sessions to start fatigue tracking. Come back after a week or two of training.</p>
-          <br><button class="btn primary" onclick="Router.go('log')">Log a Workout</button>
+          <br><button class="btn primary" data-nav="log">Log a Workout</button>
         </div>`;
       return;
     }

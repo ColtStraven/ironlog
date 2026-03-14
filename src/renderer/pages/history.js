@@ -7,18 +7,21 @@ const HistoryPage = (() => {
     const container = document.getElementById('history-content');
 
     if (sessions.length === 0) {
-      container.innerHTML = `<div class="empty-state">
-        <div class="empty-title">No sessions logged yet</div>
-        <p>Your workout history will appear here.</p>
-        <br><button class="btn primary" onclick="Router.go('log')">Log First Workout</button>
-      </div>`;
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-title">No sessions logged yet</div>
+          <p>Your workout history will appear here.</p>
+          <br>
+          <button class="btn primary" data-action="go-log">Log First Workout</button>
+        </div>`;
+      bindDelegation(container);
       return;
     }
 
     function volTag(v) {
       if (!v) return '';
-      if (v < 5000)  return `<span class="tag tag-amber">Maintenance</span>`;
-      if (v < 7000)  return `<span class="tag tag-blue">Slow growth</span>`;
+      if (v < 5000)   return `<span class="tag tag-amber">Maintenance</span>`;
+      if (v < 7000)   return `<span class="tag tag-blue">Slow growth</span>`;
       if (v <= 12000) return `<span class="tag tag-green">Ideal</span>`;
       return `<span class="tag tag-red">High</span>`;
     }
@@ -27,7 +30,7 @@ const HistoryPage = (() => {
       const d = new Date(s.session_date + 'T00:00:00').toLocaleDateString('en-US',
         { weekday:'short', month:'short', day:'numeric' });
       return `
-        <tr style="cursor:pointer" onclick="AnalysisPage.load(${s.id})">
+        <tr style="cursor:pointer" data-action="view-session" data-id="${s.id}">
           <td style="font-family:var(--mono);font-size:12px;color:var(--text-2)">${d}</td>
           <td style="font-weight:500">${s.label || s.session_type}</td>
           <td><span class="tag tag-${s.session_type === 'push' ? 'green' : s.session_type === 'pull' ? 'blue' : 'amber'}">${s.session_type}</span></td>
@@ -36,7 +39,7 @@ const HistoryPage = (() => {
           <td style="font-family:var(--mono)">${s.avg_dropoff_pct != null ? Math.round(s.avg_dropoff_pct) + '%' : '—'}</td>
           <td style="color:var(--text-3)">${s.exercise_count || '—'} exercises</td>
           <td>
-            <button class="del-btn" onclick="event.stopPropagation();HistoryPage.deleteSession(${s.id})">✕</button>
+            <button class="del-btn" data-action="delete-session" data-id="${s.id}">✕</button>
           </td>
         </tr>`;
     }).join('');
@@ -46,27 +49,57 @@ const HistoryPage = (() => {
         <table class="set-table" style="width:100%">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Label</th>
-              <th>Type</th>
-              <th>Volume</th>
-              <th>Zone</th>
-              <th>Drop-off</th>
-              <th>Exercises</th>
-              <th></th>
+              <th>Date</th><th>Label</th><th>Type</th><th>Volume</th>
+              <th>Zone</th><th>Drop-off</th><th>Exercises</th><th></th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
         </table>
       </div>
       <div id="session-detail"></div>`;
+
+    bindDelegation(container);
+  }
+
+  function bindDelegation(container) {
+    container.addEventListener('click', async e => {
+      // Delete session button
+      const delBtn = e.target.closest('[data-action="delete-session"]');
+      if (delBtn) {
+        e.stopPropagation();
+        const id = parseInt(delBtn.dataset.id);
+        if (!confirm('Delete this session? This cannot be undone.')) return;
+        await window.api.sessions.delete(id);
+        render();
+        return;
+      }
+
+      // Log first workout button
+      const logBtn = e.target.closest('[data-action="go-log"]');
+      if (logBtn) { Router.go('log'); return; }
+
+      // Close detail panel
+      const closeBtn = e.target.closest('[data-action="close-detail"]');
+      if (closeBtn) {
+        const detail = document.getElementById('session-detail');
+        if (detail) detail.innerHTML = '';
+        return;
+      }
+
+      // Row click — view session
+      const row = e.target.closest('tr[data-action="view-session"]');
+      if (row) {
+        viewSession(parseInt(row.dataset.id));
+        return;
+      }
+    });
   }
 
   async function viewSession(id) {
     const { session, stats, sets } = await window.api.sessions.get(id);
     const detail = document.getElementById('session-detail');
+    if (!detail) return;
 
-    // Group sets by exercise
     const byEx = {};
     sets.forEach(s => {
       if (!byEx[s.exercise_id]) byEx[s.exercise_id] = { name: s.exercise_name, sets: [] };
@@ -74,15 +107,14 @@ const HistoryPage = (() => {
     });
 
     const exBlocks = Object.values(byEx).map(ex => {
-      const setRows = ex.sets.map(s =>
-        `<tr>
+      const setRows = ex.sets.map(s => `
+        <tr>
           <td style="color:var(--text-3);font-family:var(--mono)">${s.set_number}</td>
           <td style="font-family:var(--mono)">${s.weight_lbs} lbs</td>
           <td style="font-family:var(--mono)">${s.reps} reps</td>
           <td style="font-family:var(--mono);color:var(--text-3)">${s.rpe ? 'RPE ' + s.rpe : '—'}</td>
           <td style="font-family:var(--mono);color:var(--green)">${Math.round(s.weight_lbs * s.reps).toLocaleString()} lbs</td>
-        </tr>`
-      ).join('');
+        </tr>`).join('');
 
       const first = ex.sets[0]?.reps;
       const last  = ex.sets[ex.sets.length - 1]?.reps;
@@ -111,7 +143,7 @@ const HistoryPage = (() => {
             <div style="font-family:var(--mono);font-size:15px;font-weight:500">${session.label || session.session_type}</div>
             <div style="font-size:12px;color:var(--text-3)">${d}</div>
           </div>
-          <button class="btn" onclick="document.getElementById('session-detail').innerHTML=''">Close</button>
+          <button class="btn" data-action="close-detail">Close</button>
         </div>
         ${stats ? `
         <div class="analysis-grid cols-3" style="margin-bottom:20px">
@@ -135,12 +167,6 @@ const HistoryPage = (() => {
     detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  async function deleteSession(id) {
-    if (!confirm('Delete this session? This cannot be undone.')) return;
-    await window.api.sessions.delete(id);
-    render();
-  }
-
   Router.register('history', render);
-  return { render, viewSession, deleteSession };
+  return { render };
 })();

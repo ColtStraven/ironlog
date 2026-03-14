@@ -329,7 +329,7 @@ const AnalysisPage = (() => {
         <div class="empty-state">
           <div class="empty-title">No sessions yet</div>
           <p>Log your first workout, then come back here for a full breakdown.</p>
-          <br><button class="btn primary" onclick="Router.go('log')">Log a Workout</button>
+          <br><button class="btn primary" data-nav="log">Log a Workout</button>
         </div>`;
       return;
     }
@@ -419,7 +419,15 @@ const AnalysisPage = (() => {
     render(parseInt(id));
   }
 
-  Router.register('analysis', () => render());
+  // Called by log.js before Router.go('analysis') to target a specific session
+  let _pendingSessionId = null;
+  function setSession(id) { _pendingSessionId = id; }
 
-  return { render, loadSession };
+  Router.register('analysis', () => {
+    const id = _pendingSessionId;
+    _pendingSessionId = null;
+    render(id || null);
+  });
+
+  return { render, loadSession, setSession };
 })();

@@ -15,6 +15,12 @@
   },
   "build": {
     "appId": "com.ironlog.app",
-    "productName": "IronLog"
+    "productName": "IronLog",
+    "win": {
+    "icon": "build/icons/icon.ico"
+  },
+  "mac": {
+    "icon": "build/icons/icon.icns"
+  }
   }
 }
