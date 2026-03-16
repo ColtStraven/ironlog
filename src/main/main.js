@@ -14,7 +14,7 @@ function createWindow() {
     height: 820,
     minWidth:  900,
     minHeight: 600,
-    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
+    frame: false,
     backgroundColor: '#f5f4f0',
     webPreferences: {
       preload:          path.join(__dirname, 'preload.js'),
@@ -29,6 +29,14 @@ function createWindow() {
   if (process.argv.includes('--dev')) {
     win.webContents.openDevTools({ mode: 'detach' });
   }
+
+  // ── Window control IPC ─────────────────────────────────────────────────
+  ipcMain.on('win:minimize', () => win.minimize());
+  ipcMain.on('win:maximize', () => win.isMaximized() ? win.unmaximize() : win.maximize());
+  ipcMain.on('win:close',    () => win.close());
+
+  win.on('maximize',   () => win.webContents.send('win:maximized', true));
+  win.on('unmaximize', () => win.webContents.send('win:maximized', false));
 }
 
 app.whenReady().then(async () => {

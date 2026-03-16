@@ -16,6 +16,18 @@
 
 <div id="shell">
 
+  <!-- ── Custom titlebar ──────────────────────────── -->
+  <div id="titlebar">
+    <div id="titlebar-drag">IronLog</div>
+    <div id="titlebar-controls">
+      <button id="btn-minimize" title="Minimize">&#x2212;</button>
+      <button id="btn-maximize" title="Maximize">&#x25A1;</button>
+      <button id="btn-close"    title="Close">&#x2715;</button>
+    </div>
+  </div>
+
+  <div id="app-body">
+
   <!-- ── Sidebar ─────────────────────────────── -->
   <aside id="sidebar">
     <div class="logo">
@@ -228,7 +240,8 @@
     </div>
 
   </main>
-</div>
+</div><!-- /app-body -->
+</div><!-- /shell -->
 
 <!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -251,6 +264,19 @@
 <script src="pages/hevy.js"></script>
 <script src="pages/settings.js"></script>
 <script src="pages/app.js"></script>
+
+<script>
+  // ── Titlebar controls ────────────────────────────────
+  document.getElementById('btn-minimize').addEventListener('click', () => window.win.minimize());
+  document.getElementById('btn-close').addEventListener('click',    () => window.win.close());
+
+  const btnMax = document.getElementById('btn-maximize');
+  btnMax.addEventListener('click', () => window.win.maximize());
+  window.win.onMaximized(isMax => {
+    btnMax.innerHTML = isMax ? '&#x2750;' : '&#x25A1;';
+    btnMax.title     = isMax ? 'Restore' : 'Maximize';
+  });
+</script>
 
 </body>
 </html>

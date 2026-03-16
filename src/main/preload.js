@@ -10,6 +10,14 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 const invoke = (channel, ...args) => ipcRenderer.invoke(channel, ...args);
 
+// ── Window controls ─────────────────────────────────────────────────────────
+contextBridge.exposeInMainWorld('win', {
+  minimize:  () => ipcRenderer.send('win:minimize'),
+  maximize:  () => ipcRenderer.send('win:maximize'),
+  close:     () => ipcRenderer.send('win:close'),
+  onMaximized: (cb) => ipcRenderer.on('win:maximized', (_, val) => cb(val)),
+});
+
 contextBridge.exposeInMainWorld('api', {
 
   // ── Exercises ──────────────────────────────────────────────
