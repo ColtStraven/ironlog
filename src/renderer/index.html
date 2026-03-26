@@ -40,6 +40,9 @@
       <div class="nav-item active" data-page="dashboard">
         <span class="nav-dot"></span>Dashboard
       </div>
+      <div class="nav-item" data-page="calendar">
+        <span class="nav-dot"></span>Calendar
+      </div>
 
       <div class="nav-section">Training</div>
       <div class="nav-item" data-page="log">
@@ -99,6 +102,15 @@
 
   <!-- ── Main ────────────────────────────────── -->
   <main id="main">
+
+    <!-- Calendar -->
+    <div id="page-calendar" class="page-view hidden">
+      <div class="topbar">
+        <div class="topbar-title">Calendar</div>
+        <div class="topbar-meta" id="calendar-meta"></div>
+      </div>
+      <div class="page-content" id="calendar-content"></div>
+    </div>
 
     <!-- Dashboard -->
     <div id="page-dashboard" class="page-view">
@@ -248,6 +260,7 @@
 
 <!-- App modules (load order matters) -->
 <script src="pages/router.js"></script>
+<script src="pages/calendar.js"></script>
 <script src="pages/dashboard.js"></script>
 <script src="pages/log.js"></script>
 <script src="pages/history.js"></script>
